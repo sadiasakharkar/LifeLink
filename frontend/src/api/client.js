@@ -1,38 +1,11 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+import { mockRequest } from "./mockServer.js";
 
 export const apiRequest = async (path, options = {}, token) => {
   try {
-    const response = await fetch(`${API_URL}${path}`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        ...(options.headers ?? {}),
-      },
-      ...options,
-    });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: "Request failed" }));
-      throw new Error(error.message ?? "Request failed");
-    }
-
-    if (response.status === 204) {
-      return null;
-    }
-
-    const payload = await response.json();
-    return payload?.data ?? payload;
+    return await mockRequest(path, options, token);
   } catch (error) {
-    if (
-      error.message === "Failed to fetch" ||
-      error.message === "Load failed" ||
-      error.message === "NetworkError when attempting to fetch resource."
-    ) {
-      throw new Error("Cannot connect to the LifeLink backend. Please make sure the backend server is running.");
-    }
-
-    throw new Error(error.message ?? "Unable to reach LifeLink services");
+    throw new Error(error.message ?? "Unable to reach LifeLink demo services");
   }
 };
 
-export { API_URL };
+export const API_URL = "frontend-demo";

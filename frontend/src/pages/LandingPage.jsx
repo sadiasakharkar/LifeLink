@@ -41,11 +41,11 @@ export const LandingPage = () => (
         <span>Support</span>
       </nav>
       <div className="flex items-center gap-3">
-        <Link to="/login">
-          <SecondaryButton className="rounded-full px-5 py-2.5">Login</SecondaryButton>
+        <Link to="/app">
+          <SecondaryButton className="rounded-full px-5 py-2.5">Open Demo</SecondaryButton>
         </Link>
-        <Link to="/signup">
-          <PrimaryButton className="rounded-full px-5 py-2.5">Get Started</PrimaryButton>
+        <Link to="/app">
+          <PrimaryButton className="rounded-full px-5 py-2.5">Launch Dashboard</PrimaryButton>
         </Link>
       </div>
     </header>
@@ -61,11 +61,11 @@ export const LandingPage = () => (
           Saving lives through intelligent, real-time organ matching. Our sanctuary data stream gives surgical teams faster, fairer support across every critical decision.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
-          <Link to="/signup">
-            <PrimaryButton className="rounded-full px-6">Get Started</PrimaryButton>
+          <Link to="/app">
+            <PrimaryButton className="rounded-full px-6">Open Demo Workspace</PrimaryButton>
           </Link>
           <Link to="/login">
-            <button className="rounded-full px-2 py-3 text-sm font-semibold text-brand-700">Login</button>
+            <button className="rounded-full px-2 py-3 text-sm font-semibold text-brand-700">Choose Role</button>
           </Link>
         </div>
       </div>
@@ -187,7 +187,7 @@ export const LandingPage = () => (
     <section className="mx-auto max-w-7xl px-6 py-16">
       <div className="text-center">
         <h2 className="text-4xl font-semibold text-slate-900">Choose Your Portal</h2>
-        <p className="mt-3 text-sm text-slate-500">Continue as a verified professional to access live allocation workflows.</p>
+        <p className="mt-3 text-sm text-slate-500">Open the frontend demo as an admin, doctor, or transport coordinator.</p>
       </div>
       <div className="mt-10 grid gap-6 md:grid-cols-3">
         {roles.map((role) => (
@@ -201,7 +201,7 @@ export const LandingPage = () => (
               {role === "Doctor" && "Review recipients, match evidence, and clinical allocation details."}
               {role === "Transport Team" && "Track assigned deliveries, routes, and mission-critical ETAs."}
             </p>
-            <Link to="/login" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-700">
+            <Link to="/app" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-700">
               Access Portal
               <IconChevron className="h-4 w-4" />
             </Link>

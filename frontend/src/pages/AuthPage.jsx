@@ -53,7 +53,7 @@ export const AuthPage = ({ mode }) => {
         </div>
         <h1 className="mt-5 text-5xl font-semibold text-slate-900">LifeLink</h1>
         <p className="mt-3 text-sm uppercase tracking-[0.26em] text-slate-400">
-          {isSignup ? "Clinical Sanctuary Enrollment" : "Clinical Sanctuary Access"}
+          {isSignup ? "Clinical Sanctuary Demo Enrollment" : "Clinical Sanctuary Demo Access"}
         </p>
 
         <Surface className="mx-auto mt-10 max-w-xl px-7 py-8 text-left">
@@ -95,14 +95,14 @@ export const AuthPage = ({ mode }) => {
             {error ? <p className="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p> : null}
 
             <PrimaryButton type="submit" className="mt-6 w-full rounded-2xl py-3.5">
-              {loading ? "Processing..." : isSignup ? "Secure Signup" : "Secure Login"}
+              {loading ? "Opening..." : isSignup ? "Create Demo Access" : "Enter Demo Workspace"}
             </PrimaryButton>
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-500">
-            {isSignup ? "Already have access?" : "Need system access?"}{" "}
+            {isSignup ? "Already in the demo?" : "Need another demo role?"}{" "}
             <Link to={isSignup ? "/login" : "/signup"} className="font-semibold text-brand-700">
-              {isSignup ? "Login" : "Create account"}
+              {isSignup ? "Login" : "Create demo access"}
             </Link>
           </p>
         </Surface>

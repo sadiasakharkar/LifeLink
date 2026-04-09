@@ -3,11 +3,21 @@ import { createContext, useContext, useEffect, useState } from "react";
 const AuthContext = createContext(null);
 
 const storageKey = "lifelink_auth";
+const defaultAuthState = {
+  token: "demo-token-hospital-admin",
+  user: {
+    id: "user-admin",
+    name: "Dr. Aris Thorne",
+    email: "admin@lifelink.org",
+    role: "Hospital Admin",
+    hospitalName: "Metro Care Hospital",
+  },
+};
 
 export const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState(() => {
     const saved = localStorage.getItem(storageKey);
-    return saved ? JSON.parse(saved) : { token: "", user: null };
+    return saved ? JSON.parse(saved) : defaultAuthState;
   });
 
   useEffect(() => {
@@ -15,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   }, [authState]);
 
   const login = (payload) => setAuthState(payload);
-  const logout = () => setAuthState({ token: "", user: null });
+  const logout = () => setAuthState(defaultAuthState);
 
   return (
     <AuthContext.Provider value={{ ...authState, login, logout }}>

@@ -101,7 +101,7 @@ export const DonorEntryPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-2xl font-semibold text-slate-900">Registered Donors</h3>
-              <p className="mt-1 text-sm text-slate-400">Persistent donor records from DynamoDB</p>
+              <p className="mt-1 text-sm text-slate-400">Persistent donor records stored in the browser demo workspace</p>
             </div>
             <button
               onClick={() => showToast({ title: "Transport feed simulated", description: "Live transport is mocked for this MVP.", tone: "info" })}
