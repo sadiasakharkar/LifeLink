@@ -32,27 +32,26 @@ export const AppTopbar = () => {
   const meta = routeMeta.find((item) => location.pathname.startsWith(item.path)) ?? routeMeta[routeMeta.length - 1];
 
   return (
-    <div className="mb-6 flex flex-col gap-4 rounded-[28px] border border-white/80 bg-white/90 px-5 py-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h2 className="text-2xl font-semibold tracking-tight text-brand-700">{meta.title}</h2>
-        <p className="mt-1 text-xs uppercase tracking-[0.26em] text-slate-400">Clinical sanctuary</p>
+    <div className="mb-7 flex flex-col gap-4 rounded-[22px] border border-slate-100 bg-white px-5 py-4 shadow-[0_18px_40px_rgba(15,23,42,0.045)] sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0">
+        <h2 className="text-[1.75rem] font-semibold tracking-tight text-brand-700">{meta.title}</h2>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="flex items-center gap-3 rounded-full bg-slate-50 px-4 py-3 text-slate-400 sm:min-w-[320px]">
           <IconSearch className="h-4 w-4" />
-          <span className="text-sm">{meta.search}</span>
+          <span className="truncate text-sm">{meta.search}</span>
         </div>
         <button
           onClick={() => showToast({ title: "Notifications checked", description: "Live notification feeds are simulated in this MVP.", tone: "info" })}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-50 text-slate-500 transition hover:bg-slate-100"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-500 shadow-[0_10px_20px_rgba(15,23,42,0.06)] transition hover:bg-slate-50"
         >
           <IconBell className="h-4.5 w-4.5" />
         </button>
-        <div className="flex items-center gap-3 rounded-full bg-slate-50 px-3 py-2">
+        <div className="flex items-center gap-3 rounded-full bg-white px-3 py-2 shadow-[0_10px_20px_rgba(15,23,42,0.06)]">
           <div className="text-right">
             <p className="text-sm font-semibold text-slate-700">{user?.name ?? "Coordinator"}</p>
-            <p className="text-[11px] uppercase tracking-[0.24em] text-slate-400">{user?.role}</p>
+            <p className="text-[10px] uppercase tracking-[0.24em] text-slate-400">{user?.role}</p>
           </div>
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-brand-600 to-emerald-500 text-xs font-bold text-white">
             {initials(user?.name ?? "LL")}

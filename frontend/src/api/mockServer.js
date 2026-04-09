@@ -351,8 +351,13 @@ export const mockRequest = async (path, options = {}, token) => {
 
   if (pathname === "/auth/login" && method === "POST") {
     const email = String(body.email ?? "").toLowerCase();
+    const role = String(body.role ?? "");
     const user =
-      email.includes("transport") ? demoUsers.transport : email.includes("doctor") ? demoUsers.doctor : demoUsers.admin;
+      role === "Transport Team" || email.includes("transport")
+        ? demoUsers.transport
+        : role === "Doctor" || email.includes("doctor")
+          ? demoUsers.doctor
+          : demoUsers.admin;
     logAction(db, { userId: user.id, action: "LOGIN", entityType: "USER", entityId: user.id, metadata: { role: user.role } });
     saveDb(db);
     return { token: `demo-token-${user.role.toLowerCase().replaceAll(" ", "-")}`, user };

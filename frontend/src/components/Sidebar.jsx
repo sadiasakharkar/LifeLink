@@ -29,51 +29,51 @@ export const Sidebar = () => {
   const links = navigation.filter((item) => item.roles.includes(user?.role));
 
   return (
-    <aside className="flex w-full flex-col rounded-none border-r border-slate-200 bg-[linear-gradient(180deg,#fbfcff_0%,#f4f7fb_100%)] px-5 py-6 lg:min-h-screen lg:max-w-[220px]">
-      <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-700 to-brand-500 text-lg font-bold text-white shadow-[0_16px_34px_rgba(29,78,216,0.28)]">
-          +
+    <aside className="flex w-full flex-col border-r border-slate-200/80 bg-[linear-gradient(180deg,#f8fbff_0%,#f2f6fc_100%)] px-5 py-6 lg:min-h-screen lg:max-w-[190px] lg:px-4">
+      <div className="flex items-center gap-3 px-1">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-700 to-brand-500 text-sm font-bold text-white shadow-[0_14px_26px_rgba(29,78,216,0.22)]">
+          ✦
         </div>
         <div>
-          <p className="text-xl font-semibold text-slate-900">LifeLink</p>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400">Clinical Sanctuary</p>
+          <p className="text-[1.1rem] font-semibold leading-none text-slate-900">LifeLink</p>
+          <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">Clinical Sanctuary</p>
         </div>
       </div>
 
-      <nav className="mt-10 space-y-2">
+      <nav className="mt-10 space-y-1">
         {links.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.to === "/app"}
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition ${
+              `group flex items-center gap-3 rounded-2xl px-3 py-3 text-[14px] font-medium transition ${
                 isActive
-                  ? "bg-blue-50 text-brand-700 shadow-[inset_3px_0_0_#2563eb]"
-                  : "text-slate-500 hover:bg-white hover:text-slate-900"
+                  ? "bg-[#eef4ff] text-brand-700 shadow-[inset_3px_0_0_#2563eb]"
+                  : "text-slate-500 hover:bg-white/80 hover:text-slate-900"
               }`
             }
           >
-            <item.icon className="h-4.5 w-4.5" />
+            <item.icon className="h-[17px] w-[17px] transition group-hover:scale-105" />
             {item.label}
           </NavLink>
         ))}
       </nav>
 
-      <div className="mt-auto space-y-2 pt-8">
-        <div className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-500">
-          <IconSettings className="h-4.5 w-4.5" />
+      <div className="mt-auto space-y-1 pt-10">
+        <div className="flex items-center gap-3 rounded-2xl px-3 py-3 text-[14px] font-medium text-slate-500">
+          <IconSettings className="h-[17px] w-[17px]" />
           Settings
         </div>
-        <div className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-500">
-          <IconSupport className="h-4.5 w-4.5" />
+        <div className="flex items-center gap-3 rounded-2xl px-3 py-3 text-[14px] font-medium text-slate-500">
+          <IconSupport className="h-[17px] w-[17px]" />
           Support
         </div>
       </div>
 
-      <div className="mt-5 rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_18px_30px_rgba(15,23,42,0.04)]">
+      <div className="mt-5 rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_18px_30px_rgba(15,23,42,0.04)]">
         <p className="text-sm font-semibold text-slate-800">{user?.name}</p>
-        <p className="mt-1 text-[11px] uppercase tracking-[0.22em] text-slate-400">{user?.role}</p>
+        <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-slate-400">{user?.role}</p>
         <button
           onClick={logout}
           className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"

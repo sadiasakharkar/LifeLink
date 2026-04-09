@@ -3,7 +3,7 @@ import { apiRequest } from "../api/client.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
 import { usePolling } from "../hooks/usePolling.js";
-import { SectionHeading, StatCard, Surface } from "../components/ui.jsx";
+import { StatCard, Surface } from "../components/ui.jsx";
 import { IconAllocation, IconClock, IconTransport } from "../components/icons.jsx";
 
 export const TransportPage = () => {
@@ -44,12 +44,6 @@ export const TransportPage = () => {
 
   return (
     <div className="space-y-6">
-      <SectionHeading
-        eyebrow="Route operations"
-        title="Transport Command"
-        subtitle="Static transport tracking is simulated in this MVP, but all buttons and assignment states are functional."
-      />
-
       <section className="grid gap-4 xl:grid-cols-3">
         <StatCard label="Active Deliveries" value={String(assignments.length).padStart(2, "0")} detail="On schedule" accent="text-emerald-600" icon={<IconTransport />} />
         <StatCard label="Avg Transit Time" value="42 min" detail="Optimized routes" accent="text-slate-500" icon={<IconClock />} />
@@ -58,15 +52,22 @@ export const TransportPage = () => {
 
       <div className="grid gap-5 xl:grid-cols-[1.35fr,0.65fr]">
         <Surface>
+          <div className="mb-5 flex items-center justify-between">
+            <h3 className="text-[2rem] font-semibold text-slate-900">Active Deliveries</h3>
+            <button className="text-sm font-semibold text-brand-700">View History →</button>
+          </div>
           <div className="space-y-4">
             {assignments.map((assignment) => (
-              <div key={assignment.id} className="rounded-[28px] border border-slate-100 bg-slate-50/70 p-5">
+              <div key={assignment.id} className={`rounded-[28px] border bg-white p-5 ${assignment.trackingStatus === "IN_TRANSIT" ? "border-l-[3px] border-l-rose-500" : "border-slate-100"}`}>
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div>
-                    <p className="text-2xl font-semibold text-slate-900">{assignment.donorSnapshot?.organType}</p>
+                    <p className="text-2xl font-semibold text-slate-900">{assignment.donorSnapshot?.organType} ({assignment.id.slice(-5).toUpperCase()})</p>
                     <p className="mt-1 text-sm text-slate-500">Destination: {assignment.dropLocation}</p>
                   </div>
-                  <p className="text-sm font-semibold text-brand-700">{assignment.trackingStatus}</p>
+                  <div className="text-right">
+                    <p className={`text-sm font-semibold ${assignment.trackingStatus === "IN_TRANSIT" ? "text-rose-500" : "text-slate-500"}`}>{assignment.trackingStatus === "IN_TRANSIT" ? "HIGH URGENCY" : "NORMAL TRANSIT"}</p>
+                    <p className="mt-2 text-2xl font-semibold text-rose-500">{assignment.trackingStatus === "IN_TRANSIT" ? "00:54:12 Remaining" : ""}</p>
+                  </div>
                 </div>
                 <div className="mt-5 grid gap-4 md:grid-cols-3">
                   <div>
@@ -93,7 +94,7 @@ export const TransportPage = () => {
                     onClick={() => updateTransportStage(assignment, assignment.trackingStatus === "PREPARING" ? "DISPATCHED" : "DELIVERED")}
                     className="rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white"
                   >
-                    {assignment.trackingStatus === "PREPARING" ? "Dispatch Mission" : assignment.trackingStatus === "IN_TRANSIT" ? "Mark Delivered" : "Delivered"}
+                    {assignment.trackingStatus === "PREPARING" ? "Track Real-time" : assignment.trackingStatus === "IN_TRANSIT" ? "Mark Delivered" : "Delivered"}
                   </button>
                 </div>
                 {assignment.transportUpdates?.length ? (
@@ -122,6 +123,10 @@ export const TransportPage = () => {
                 Emergency Broadcast
               </button>
             </div>
+          </Surface>
+          <Surface className="border-emerald-100 bg-emerald-50/70">
+            <p className="text-[11px] uppercase tracking-[0.24em] text-slate-400">Regional Alerts</p>
+            <p className="mt-4 text-sm leading-6 text-emerald-700">Weather advisory for North District. Flight medical transport cleared for low-altitude routing.</p>
           </Surface>
         </div>
       </div>

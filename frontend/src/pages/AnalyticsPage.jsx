@@ -13,7 +13,7 @@ import {
   YAxis,
 } from "recharts";
 import { useToast } from "../context/ToastContext.jsx";
-import { Badge, SectionHeading, StatCard, Surface } from "../components/ui.jsx";
+import { Badge, StatCard, Surface } from "../components/ui.jsx";
 import { IconAllocation, IconAnalytics, IconCheck, IconClock } from "../components/icons.jsx";
 
 const areaData = [
@@ -45,12 +45,6 @@ export const AnalyticsPage = () => {
 
   return (
     <div className="space-y-6">
-    <SectionHeading
-      eyebrow="Real-time performance metrics"
-      title="Analytics Overview"
-      subtitle="Track transplant throughput, matching efficiency, organ utilization, urgency distribution, and operational anomalies."
-    />
-
     <section className="grid gap-4 xl:grid-cols-4">
       <StatCard label="Total Transplants" value="1.2k" detail="+12% vs LY" accent="text-emerald-600" icon={<IconAnalytics />} />
       <StatCard label="Avg Matching Time" value="4.5m" detail="-0.8m improved" accent="text-brand-700" icon={<IconClock />} />
