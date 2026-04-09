@@ -26,6 +26,26 @@ export const sortRecipientsByPriority = (recipients) =>
     return right.waitingTime - left.waitingTime;
   });
 
+export const computeRecipientScore = (donor, recipient, position = 0) => {
+  const compatibilityScore = isBloodCompatible(donor.bloodGroup, recipient.bloodGroup) ? 45 : 0;
+  const urgencyScore = Math.min(35, recipient.urgency * 3.5);
+  const waitingScore = Math.min(15, recipient.waitingTime / 20);
+  const proximityScore = donor.hospitalId && donor.hospitalId === recipient.hospitalId ? 5 : 0;
+  const rankPenalty = position * 2;
+
+  return Math.max(0, Math.round((compatibilityScore + urgencyScore + waitingScore + proximityScore - rankPenalty) * 10) / 10);
+};
+
+export const buildAllocationReason = (donor, recipient, score) => [
+  `Blood compatibility confirmed: ${donor.bloodGroup} donor to ${recipient.bloodGroup} recipient`,
+  `Urgency contributed strongly with clinical score ${recipient.urgency}`,
+  `Waiting time of ${recipient.waitingTime} days increased recipient priority`,
+  donor.hospitalId && donor.hospitalId === recipient.hospitalId
+    ? "Same hospital network improved transport viability"
+    : "Cross-hospital transfer remains clinically viable",
+  `Composite match score calculated at ${score}`,
+];
+
 export const explainAllocation = (donor, recipient) => [
   `${donor.bloodGroup} donor is compatible with ${recipient.bloodGroup} recipient`,
   `Urgency score ${recipient.urgency} was the highest among eligible recipients`,

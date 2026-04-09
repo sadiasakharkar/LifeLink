@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { apiRequest } from "../api/client.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
-import { useSocket } from "../hooks/useSocket.js";
+import { usePolling } from "../hooks/usePolling.js";
 import { SectionHeading, StatCard, Surface } from "../components/ui.jsx";
 import { IconAllocation, IconClock, IconTransport } from "../components/icons.jsx";
 
@@ -20,10 +20,27 @@ export const TransportPage = () => {
     loadAssignments();
   }, []);
 
-  useSocket({
-    "allocation:created": loadAssignments,
-    "allocation:updated": loadAssignments,
-  });
+  usePolling(loadAssignments, 12000, Boolean(token));
+
+  const updateTransportStage = async (assignment, stage) => {
+    try {
+      await apiRequest(
+        `/allocations/${assignment.id}/transport`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            stage,
+            note: stage === "DELIVERED" ? "Organ delivered to recipient surgical unit." : `Transport stage updated to ${stage.toLowerCase()}.`,
+          }),
+        },
+        token,
+      );
+      await loadAssignments();
+      showToast({ title: "Transport updated", description: `Mission moved to ${stage.toLowerCase()}.` });
+    } catch (error) {
+      showToast({ title: "Unable to update transport", description: error.message, tone: "error" });
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -73,12 +90,21 @@ export const TransportPage = () => {
                     Contact Driver
                   </button>
                   <button
-                    onClick={() => showToast({ title: "Tracking refreshed", description: "Static transport updates have been refreshed.", tone: "success" })}
+                    onClick={() => updateTransportStage(assignment, assignment.trackingStatus === "PREPARING" ? "DISPATCHED" : "DELIVERED")}
                     className="rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white"
                   >
-                    Track Real-time
+                    {assignment.trackingStatus === "PREPARING" ? "Dispatch Mission" : assignment.trackingStatus === "IN_TRANSIT" ? "Mark Delivered" : "Delivered"}
                   </button>
                 </div>
+                {assignment.transportUpdates?.length ? (
+                  <div className="mt-5 space-y-2 rounded-2xl bg-white p-4">
+                    {assignment.transportUpdates.map((update) => (
+                      <p key={update.label} className="text-sm text-slate-600">
+                        {update.label}: <span className="font-semibold">{update.status}</span>
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

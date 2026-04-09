@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const nodeEnv = process.env.NODE_ENV ?? "development";
+
 export const env = {
   port: Number(process.env.PORT ?? 4000),
   jwtSecret: process.env.JWT_SECRET ?? "lifelink_demo_secret",
@@ -15,6 +17,7 @@ export const env = {
   recipientsTable: process.env.RECIPIENTS_TABLE ?? "LifeLinkRecipients",
   allocationsTable: process.env.ALLOCATIONS_TABLE ?? "LifeLinkAllocations",
   auditLogsTable: process.env.AUDIT_LOGS_TABLE ?? "LifeLinkAuditLogs",
-  nodeEnv: process.env.NODE_ENV ?? "development",
-  seedDemoData: process.env.SEED_DEMO_DATA !== "false",
+  nodeEnv,
+  seedDemoData: process.env.SEED_DEMO_DATA === "true",
+  pollIntervalMs: Number(process.env.POLL_INTERVAL_MS ?? 12000),
 };

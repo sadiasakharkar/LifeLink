@@ -18,4 +18,9 @@ export const auditLogRepository = {
     const logs = await scanItems(env.auditLogsTable, filters);
     return logs.sort((left, right) => new Date(right.timestamp) - new Date(left.timestamp));
   },
+
+  async recent(limit = 20) {
+    const logs = await scanItems(env.auditLogsTable);
+    return logs.sort((left, right) => new Date(right.timestamp) - new Date(left.timestamp)).slice(0, limit);
+  },
 };

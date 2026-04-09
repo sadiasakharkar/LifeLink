@@ -15,4 +15,5 @@ export const allocationController = {
     await allocationService.remove(req.params.id, req.user);
     return success(res, { id: req.params.id });
   }),
+  updateTransport: asyncHandler(async (req, res) => success(res, await allocationService.updateTransportStage(req.params.id, req.body, req.user))),
 };

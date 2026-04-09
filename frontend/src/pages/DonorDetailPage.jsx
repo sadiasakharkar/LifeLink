@@ -11,6 +11,7 @@ export const DonorDetailPage = () => {
   const { showToast } = useToast();
   const [donor, setDonor] = useState(null);
   const [allocations, setAllocations] = useState([]);
+  const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [matching, setMatching] = useState(false);
 
@@ -23,6 +24,19 @@ export const DonorDetailPage = () => {
       ]);
       setDonor(donorData);
       setAllocations(allocationData);
+      try {
+        const previewData = await apiRequest(
+          "/match",
+          {
+            method: "POST",
+            body: JSON.stringify({ donorId: id }),
+          },
+          token,
+        );
+        setPreview(previewData);
+      } catch {
+        setPreview(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -111,6 +125,27 @@ export const DonorDetailPage = () => {
           </div>
         </Surface>
       </div>
+
+      {preview?.rankedCandidates?.length ? (
+        <Surface>
+          <h3 className="text-2xl font-semibold text-slate-900">Scoring Preview</h3>
+          <div className="mt-5 space-y-4">
+            {preview.rankedCandidates.slice(0, 4).map((candidate, index) => (
+              <div key={candidate.recipientId} className="rounded-[24px] border border-slate-100 bg-slate-50/70 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-slate-900">#{index + 1} {candidate.recipientName}</p>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Urgency {candidate.urgency} · Waiting {candidate.waitingTime} days
+                    </p>
+                  </div>
+                  <Badge tone={index === 0 ? "success" : "info"}>{candidate.score}</Badge>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Surface>
+      ) : null}
     </div>
   );
 };

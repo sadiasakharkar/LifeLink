@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { apiRequest } from "../api/client.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
-import { useSocket } from "../hooks/useSocket.js";
+import { usePolling } from "../hooks/usePolling.js";
 import { Badge, SectionHeading, Surface } from "../components/ui.jsx";
 
 export const AllocationPage = () => {
@@ -20,10 +20,7 @@ export const AllocationPage = () => {
     loadAllocations();
   }, []);
 
-  useSocket({
-    "allocation:created": loadAllocations,
-    "allocation:updated": loadAllocations,
-  });
+  usePolling(loadAllocations, 12000, Boolean(token));
 
   const latest = allocations[0];
 
@@ -67,6 +64,26 @@ export const AllocationPage = () => {
               </div>
             </div>
           </div>
+          {latest.rankingList?.length ? (
+            <div className="mt-6 rounded-[24px] border border-slate-100 bg-slate-50/70 p-5">
+              <p className="text-lg font-semibold text-slate-900">Ranked Candidate List</p>
+              <div className="mt-4 space-y-3">
+                {latest.rankingList.slice(0, 3).map((candidate, index) => (
+                  <div key={candidate.recipientId} className="rounded-2xl bg-white px-4 py-3">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-semibold text-slate-900">
+                          #{index + 1} {candidate.recipientName}
+                        </p>
+                        <p className="mt-1 text-sm text-slate-500">{candidate.organType} · {candidate.bloodGroup}</p>
+                      </div>
+                      <Badge tone={index === 0 ? "success" : "info"}>{candidate.score}</Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </Surface>
       ) : null}
 

@@ -23,6 +23,14 @@ export const apiRequest = async (path, options = {}, token) => {
     const payload = await response.json();
     return payload?.data ?? payload;
   } catch (error) {
+    if (
+      error.message === "Failed to fetch" ||
+      error.message === "Load failed" ||
+      error.message === "NetworkError when attempting to fetch resource."
+    ) {
+      throw new Error("Cannot connect to the LifeLink backend. Please make sure the backend server is running.");
+    }
+
     throw new Error(error.message ?? "Unable to reach LifeLink services");
   }
 };

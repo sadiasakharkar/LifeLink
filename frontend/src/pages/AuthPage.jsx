@@ -15,7 +15,7 @@ export const AuthPage = ({ mode }) => {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    password: "Password@123",
+    password: "",
     role: "Hospital Admin",
     hospitalName: "Metro Care Hospital",
   });
@@ -61,31 +61,33 @@ export const AuthPage = ({ mode }) => {
             <div className="space-y-5">
               {isSignup ? (
                 <Field label="Full Name">
-                  <Input name="name" value={form.name} onChange={updateField} placeholder="Dr. Smith" required />
+                  <Input name="name" value={form.name} onChange={updateField} placeholder="Enter name..." required />
                 </Field>
               ) : null}
 
               <Field label="Professional Email">
-                <Input name="email" type="email" value={form.email} onChange={updateField} placeholder="dr.smith@lifelink.org" required />
+                <Input name="email" type="email" value={form.email} onChange={updateField} placeholder="Enter email..." required />
               </Field>
 
               <Field label="Security Key">
-                <Input name="password" type="password" value={form.password} onChange={updateField} placeholder="Enter password" required />
-              </Field>
-
-              <Field label="System Authorization">
-                <Select name="role" value={form.role} onChange={updateField}>
-                  {roles.map((role) => (
-                    <option key={role} value={role}>
-                      {role}
-                    </option>
-                  ))}
-                </Select>
+                <Input name="password" type="password" value={form.password} onChange={updateField} placeholder="Enter password..." required />
               </Field>
 
               {isSignup ? (
+                <Field label="System Authorization">
+                  <Select name="role" value={form.role} onChange={updateField}>
+                    {roles.map((role) => (
+                      <option key={role} value={role}>
+                        {role}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+              ) : null}
+
+              {isSignup ? (
                 <Field label="Hospital Network">
-                  <Input name="hospitalName" value={form.hospitalName} onChange={updateField} placeholder="Metro Care Hospital" />
+                  <Input name="hospitalName" value={form.hospitalName} onChange={updateField} placeholder="Enter hospital name..." />
                 </Field>
               ) : null}
             </div>
@@ -105,11 +107,6 @@ export const AuthPage = ({ mode }) => {
           </p>
         </Surface>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-8 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
-          <span>HIPAA compliant</span>
-          <span>256-bit encrypted</span>
-          <span>Password: Password@123</span>
-        </div>
       </div>
     </div>
   );

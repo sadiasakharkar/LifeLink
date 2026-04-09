@@ -2,6 +2,12 @@
   "name": "organ-allocation-system",
   "private": true,
   "type": "module",
+  "scripts": {
+    "backend:dev": "npm --workspace backend run dev",
+    "frontend:dev": "npm --workspace frontend run dev",
+    "ddb:create-tables": "npm --workspace backend run ddb:create-tables",
+    "ddb:seed": "npm --workspace backend run ddb:seed"
+  },
   "workspaces": [
     "frontend",
     "backend"

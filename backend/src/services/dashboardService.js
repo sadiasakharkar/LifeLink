@@ -1,6 +1,7 @@
 import { allocationRepository } from "../repositories/allocationRepository.js";
 import { donorRepository } from "../repositories/donorRepository.js";
 import { recipientRepository } from "../repositories/recipientRepository.js";
+import { notificationService } from "./notificationService.js";
 
 export const dashboardService = {
   async getDashboard(role) {
@@ -25,6 +26,7 @@ export const dashboardService = {
         { label: "Successful Allocations", value: allocations.filter((allocation) => allocation.status === "APPROVED").length, trend: "+2 this shift" },
       ],
       alerts: activeAlerts,
+      notifications: await notificationService.listForDashboard(),
       recentAllocations: allocations.slice(0, 5),
     };
   },

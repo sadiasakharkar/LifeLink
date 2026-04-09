@@ -9,7 +9,6 @@ import { allocationRoutes } from "./routes/allocationRoutes.js";
 import { auditLogRoutes } from "./routes/auditLogRoutes.js";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 import { env } from "./config/env.js";
-import { bootstrapService } from "./services/bootstrapService.js";
 
 export const createApp = () => {
   const app = express();
@@ -21,14 +20,6 @@ export const createApp = () => {
     }),
   );
   app.use(express.json());
-  app.use(async (_req, _res, next) => {
-    try {
-      await bootstrapService.ensureSeedData();
-      next();
-    } catch (error) {
-      next(error);
-    }
-  });
 
   app.get("/health", (_req, res) => {
     res.json({ status: "ok" });

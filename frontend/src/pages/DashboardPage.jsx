@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { apiRequest } from "../api/client.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
-import { useSocket } from "../hooks/useSocket.js";
+import { usePolling } from "../hooks/usePolling.js";
 import { IconAllocation, IconCheck, IconClipboard, IconClock, IconDonor } from "../components/icons.jsx";
 import { Badge, SectionHeading, StatCard, Surface } from "../components/ui.jsx";
 
@@ -27,13 +27,7 @@ export const DashboardPage = () => {
     loadDashboard();
   }, []);
 
-  useSocket({
-    "allocation:created": () => {
-      loadDashboard();
-      showToast({ title: "Allocation updated", description: "Dashboard refreshed with the latest allocation state.", tone: "info" });
-    },
-    "donor:created": () => loadDashboard(),
-  });
+  usePolling(loadDashboard, 12000, Boolean(token));
 
   const statIcons = [<IconDonor />, <IconClipboard />, <IconAllocation />, <IconCheck />];
 
@@ -97,11 +91,11 @@ export const DashboardPage = () => {
         <Surface>
           <h3 className="text-xl font-semibold text-slate-900">Live Alerts</h3>
           <div className="mt-5 space-y-4">
-            {(dashboard.alerts.length ? dashboard.alerts : [
+            {(dashboard.notifications?.length ? dashboard.notifications : dashboard.alerts.length ? dashboard.alerts : [
               { id: "default-1", title: "Approval queue active", detail: "Pending donor matches need clinical review." },
               { id: "default-2", title: "Transport updates simulated", detail: "Fleet status remains available for review." },
             ]).map((alert, index) => (
-              <div key={alert.id} className={`rounded-[24px] border-l-[3px] p-4 ${index === 0 ? "border-brand-600 bg-blue-50/60" : "border-emerald-600 bg-emerald-50/60"}`}>
+              <div key={alert.id} className={`rounded-[24px] border-l-[3px] p-4 ${alert.priority === "danger" ? "border-rose-500 bg-rose-50/60" : alert.priority === "success" ? "border-emerald-600 bg-emerald-50/60" : "border-brand-600 bg-blue-50/60"}`}>
                 <p className="font-semibold text-slate-900">{alert.title}</p>
                 <p className="mt-2 text-sm leading-6 text-slate-500">{alert.detail}</p>
               </div>

@@ -1,6 +1,6 @@
 # LifeLink
 
-LifeLink is a production-oriented MVP for organ donation matching, allocation approval, audit logging, and transport visibility. It uses a React frontend and a serverless-friendly Node.js backend with DynamoDB persistence.
+LifeLink is a production-oriented MVP for organ donation matching, allocation approval, audit logging, notifications, richer transport visibility, and weighted allocation scoring. It uses a React frontend and a serverless-friendly Node.js backend with DynamoDB persistence.
 
 ## Structure
 
@@ -25,10 +25,15 @@ When `SEED_DEMO_DATA=true`, these accounts are created automatically with passwo
 2. Copy environment files:
    - `cp backend/.env.example backend/.env`
    - `cp frontend/.env.example frontend/.env`
-3. Point backend to AWS DynamoDB or DynamoDB Local by setting `DYNAMODB_ENDPOINT` if needed.
-4. Start backend:
+3. Start DynamoDB Local:
+   - `docker compose -f docker-compose.local.yml up -d`
+4. Create tables:
+   - `npm run ddb:create-tables`
+5. Seed demo data:
+   - `npm run ddb:seed`
+6. Start backend:
    - `cd backend && npm run dev`
-5. Start frontend:
+7. Start frontend:
    - `cd frontend && npm run dev`
 
 ## Core MVP Features
@@ -36,10 +41,15 @@ When `SEED_DEMO_DATA=true`, these accounts are created automatically with passwo
 - JWT authentication with bcrypt password hashing
 - Role-based access control for Admin, Doctor, and Transport Team
 - DynamoDB-backed persistence for users, donors, recipients, allocations, and audit logs
+- Local DynamoDB runtime support through `docker-compose.local.yml`
 - Allocation approval workflow:
   - `PENDING`
   - `APPROVED`
   - `REJECTED`
+- Weighted allocation scoring with ranked candidate previews
+- Polling-based refresh so the UI remains serverless-safe
+- Transport stage updates with persistent progress checkpoints
+- Notification feed derived from real system activity
 - Audit log viewer for compliance review
 - Functional UI flows with loading states and toast feedback
 

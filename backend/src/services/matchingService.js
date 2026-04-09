@@ -2,19 +2,30 @@ import { allocationRepository } from "../repositories/allocationRepository.js";
 import { donorRepository } from "../repositories/donorRepository.js";
 import { recipientRepository } from "../repositories/recipientRepository.js";
 import { auditLogService } from "./auditLogService.js";
-import { findBestRecipient, filterCompatibleRecipients, sortRecipientsByPriority } from "../../../shared/matching.js";
+import {
+  buildAllocationReason,
+  computeRecipientScore,
+  findBestRecipient,
+  filterCompatibleRecipients,
+  sortRecipientsByPriority,
+} from "../../../shared/matching.js";
 import { badRequest, notFound } from "../utils/apiError.js";
 
 const toRankedCandidates = (donor, recipients) =>
-  sortRecipientsByPriority(filterCompatibleRecipients(donor, recipients)).map((recipient, index) => ({
-    recipientId: recipient.id,
-    recipientName: recipient.name,
-    organType: recipient.organType,
-    bloodGroup: recipient.bloodGroup,
-    urgency: recipient.urgency,
-    waitingTime: recipient.waitingTime,
-    score: Math.max(70, 100 - index * 4 - Math.max(0, 10 - recipient.urgency)),
-  }));
+  sortRecipientsByPriority(filterCompatibleRecipients(donor, recipients)).map((recipient, index) => {
+    const score = computeRecipientScore(donor, recipient, index);
+    return {
+      recipientId: recipient.id,
+      recipientName: recipient.name,
+      organType: recipient.organType,
+      bloodGroup: recipient.bloodGroup,
+      urgency: recipient.urgency,
+      waitingTime: recipient.waitingTime,
+      hospitalId: recipient.hospitalId,
+      score,
+      reasons: buildAllocationReason(donor, recipient, score),
+    };
+  });
 
 export const matchingService = {
   async previewMatch(donorId) {
@@ -25,7 +36,7 @@ export const matchingService = {
 
     const recipients = (await recipientRepository.list()).filter((recipient) => recipient.status !== "ALLOCATED");
     const rankedCandidates = toRankedCandidates(donor, recipients);
-    const { selectedRecipient, explanation } = findBestRecipient(
+    const { selectedRecipient } = findBestRecipient(
       { organ: donor.organType, bloodGroup: donor.bloodGroup },
       recipients.map((recipient) => ({
         ...recipient,
@@ -37,7 +48,8 @@ export const matchingService = {
       donor,
       rankedCandidates,
       selectedRecipient,
-      explanation,
+      explanation:
+        rankedCandidates.find((candidate) => candidate.recipientId === selectedRecipient?.id)?.reasons ?? [],
     };
   },
 
@@ -65,7 +77,7 @@ export const matchingService = {
       ...donor,
       organ: donor.organType,
     };
-    const { selectedRecipient, explanation } = findBestRecipient(donorForMatching, normalizedRecipients);
+    const { selectedRecipient } = findBestRecipient(donorForMatching, normalizedRecipients);
 
     if (!selectedRecipient) {
       throw badRequest("No eligible recipient found");
@@ -73,6 +85,7 @@ export const matchingService = {
 
     const rankingList = toRankedCandidates(donorForMatching, normalizedRecipients);
     const topCandidate = rankingList[0];
+    const explanation = topCandidate?.reasons ?? [];
 
     await donorRepository.update(donor.id, { status: "MATCH_PENDING" });
     await recipientRepository.update(selectedRecipient.id, { status: "RESERVED" });
@@ -86,6 +99,32 @@ export const matchingService = {
       explanation,
       score: topCandidate?.score ?? 90,
       rankingList,
+      transport: {
+        currentStage: "MATCH_CONFIRMED",
+        etaMinutes: donor.hospitalId === selectedRecipient.hospitalId ? 18 : 34,
+        checkpoints: [
+          {
+            label: "Match confirmed",
+            status: "COMPLETED",
+            timestamp: new Date().toISOString(),
+          },
+          {
+            label: "Cold-chain preparation",
+            status: "ACTIVE",
+            timestamp: null,
+          },
+          {
+            label: "Courier dispatch",
+            status: "PENDING",
+            timestamp: null,
+          },
+          {
+            label: "Recipient handoff",
+            status: "PENDING",
+            timestamp: null,
+          },
+        ],
+      },
       timestamps: {
         matchedAt: new Date().toISOString(),
       },
